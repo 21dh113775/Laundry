@@ -1,0 +1,38 @@
+﻿@page "/NhanVienIndex"
+
+@using System.Net.Http.Json
+@using Domain.Entities
+@inject HttpClient httpClient
+
+<MudTable Items="@Elements.Take(4)" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>ID</MudTh>
+        <MudTh>Hoten</MudTh>
+        <MudTh>SDT</MudTh>
+        <MudTh>CanCuocCongDan</MudTh>
+        <MudTh>GioiTinh</MudTh>
+        <MudTh>Diachi</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Hoten">@context.HoTenNhanVien</MudTd>
+            <MudTd DataLabel="SDT">@context.Sodienthoai</MudTd>
+            <MudTd DataLabel="CanCuocCongDan">@context.CanCuocCongDan</MudTd>
+            <MudTd DataLabel="GioiTinh">@context.GetGioiTinh()</MudTd>
+            <MudTd DataLabel="Diachi">@context.DiaChi</MudTd>
+        </RowTemplate>
+    </MudTable>
+
+    <MudSwitch @bind-Checked="_hidePosition">Hide <b>position</b> when Breakpoint=Xs</MudSwitch>
+    <MudSwitch @bind-Checked="_loading">Show Loading</MudSwitch>
+    @code {
+    private bool _hidePosition;
+    private bool _loading;
+    private List<NhanVien> Elements = new List<NhanVien>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Elements = await httpClient.GetFromJsonAsync<List<NhanVien>>("/api/nhanvien");
+    }
+
+}
